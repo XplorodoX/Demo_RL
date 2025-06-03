@@ -28,7 +28,7 @@
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 800px;
+            max-width: 800px; /* Adjusted for potentially larger grids */
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .grid {
@@ -41,14 +41,14 @@
             background: #ffffff;
         }
         .grid-cell {
-            width: 70px;
-            height: 70px;
+            width: 60px; /* Slightly smaller for more cells */
+            height: 60px;/* Slightly smaller for more cells */
             border: 1px solid #e5e7eb;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 0.75rem;
+            font-size: 0.7rem; /* Adjusted for smaller cells */
             position: relative;
             background-color: #f8fafc;
             transition: all 0.3s ease;
@@ -57,25 +57,25 @@
             background-color: #f1f5f9;
             transform: scale(1.05);
         }
-        .grid-cell.start { 
+        .grid-cell.start {
             background: linear-gradient(135deg, #10b981, #34d399);
             color: white;
             font-weight: bold;
         }
-        .grid-cell.goal { 
+        .grid-cell.goal {
             background: linear-gradient(135deg, #f59e0b, #fbbf24);
             color: white;
             font-weight: bold;
         }
-        .grid-cell.obstacle { 
+        .grid-cell.obstacle {
             background: linear-gradient(135deg, #6b7280, #9ca3af);
             color: white;
         }
         .grid-cell .value-text {
             font-weight: 600;
             color: #1e40af;
-            font-size: 0.8rem;
-            margin-bottom: 3px;
+            font-size: 0.75rem; /* Adjusted */
+            margin-bottom: 2px;
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         .grid-cell.start .value-text,
@@ -85,42 +85,42 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         .grid-cell .policy-arrow {
-            font-size: 1.4rem;
+            font-size: 1.2rem; /* Adjusted */
             color: #dc2626;
             position: absolute;
-            bottom: 8px;
+            bottom: 5px; /* Adjusted */
             font-weight: bold;
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         .agent {
-            width: 24px;
-            height: 24px;
+            width: 20px; /* Adjusted */
+            height: 20px;/* Adjusted */
             background: radial-gradient(circle, #ef4444, #dc2626);
             border-radius: 50%;
             position: absolute;
             transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             z-index: 20;
-            border: 3px solid white;
-            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+            border: 2px solid white; /* Adjusted */
+            box-shadow: 0 3px 10px rgba(220, 38, 38, 0.4); /* Adjusted */
         }
         .controls {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px; /* Adjusted */
             margin-bottom: 20px;
             justify-content: center;
             align-items: center;
         }
         .controls button {
-            padding: 12px 20px;
-            border-radius: 10px;
+            padding: 10px 18px; /* Adjusted */
+            border-radius: 8px; /* Adjusted */
             border: none;
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
             color: white;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.9rem;
+            font-size: 0.85rem; /* Adjusted */
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
         .controls button:hover:not(:disabled) {
@@ -137,14 +137,14 @@
             box-shadow: none;
         }
         .controls input, .controls select {
-            padding: 10px 15px;
-            border-radius: 8px;
+            padding: 8px 12px; /* Adjusted */
+            border-radius: 6px; /* Adjusted */
             border: 2px solid #e5e7eb;
             background-color: white;
             color: #374151;
             font-weight: 500;
             transition: border-color 0.3s ease;
-            font-size: 0.9rem;
+            font-size: 0.85rem; /* Adjusted */
         }
         .controls input:focus, .controls select:focus {
             outline: none;
@@ -154,18 +154,18 @@
         .controls label {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.9rem;
+            gap: 6px; /* Adjusted */
+            font-size: 0.85rem; /* Adjusted */
             color: #374151;
             font-weight: 500;
         }
         .parameter-group {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px; /* Adjusted */
             background: rgba(79, 70, 229, 0.1);
-            padding: 10px 15px;
-            border-radius: 10px;
+            padding: 8px 12px; /* Adjusted */
+            border-radius: 8px; /* Adjusted */
         }
         #status-message {
             margin-top: 20px;
@@ -181,51 +181,51 @@
         h1 {
             color: #4f46e5;
             margin-bottom: 25px;
-            font-size: 2.2rem;
+            font-size: 2.0rem; /* Adjusted */
             text-align: center;
             font-weight: 700;
             text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .stats-panel {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* Adjusted */
+            gap: 12px; /* Adjusted */
             width: 100%;
             margin-bottom: 20px;
         }
         .stat-card {
             background: rgba(79, 70, 229, 0.1);
-            padding: 15px;
-            border-radius: 10px;
+            padding: 12px; /* Adjusted */
+            border-radius: 8px; /* Adjusted */
             text-align: center;
             border: 1px solid rgba(79, 70, 229, 0.2);
         }
         .stat-value {
-            font-size: 1.5rem;
+            font-size: 1.3rem; /* Adjusted */
             font-weight: 700;
             color: #4f46e5;
         }
         .stat-label {
-            font-size: 0.8rem;
+            font-size: 0.75rem; /* Adjusted */
             color: #6b7280;
-            margin-top: 5px;
+            margin-top: 4px; /* Adjusted */
         }
         .legend {
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px; /* Adjusted */
             margin-bottom: 15px;
             flex-wrap: wrap;
         }
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
+            gap: 6px; /* Adjusted */
+            font-size: 0.8rem; /* Adjusted */
         }
         .legend-color {
-            width: 20px;
-            height: 20px;
+            width: 18px; /* Adjusted */
+            height: 18px;/* Adjusted */
             border-radius: 4px;
             border: 1px solid rgba(0,0,0,0.2);
         }
@@ -295,23 +295,25 @@
     </div>
 
     <script>
-        // Grid-Konfiguration
-        const GRID_ROWS = 5;
-        const GRID_COLS = 6;
-        const CELL_SIZE = 70;
+        // --- START: GRID CONFIGURATION ---
+        // Feel free to change these values to customize the grid
+        const GRID_ROWS = 5; // Number of rows
+        const GRID_COLS = 6; // Number of columns
+        const CELL_WIDTH = 60; // Visual width of a cell in pixels
+        const CELL_HEIGHT = 60; // Visual height of a cell in pixels
 
-        // Zustände und Belohnungen
-        const START_STATE = { row: 2, col: 0 };
-        const GOAL_STATE = { row: 0, col: 5 };
-        const OBSTACLES = [
+        const START_STATE = { row: 2, col: 0 };    // Agent's starting position
+        const GOAL_STATE = { row: 0, col: 5 };     // Goal position
+        const OBSTACLES = [                        // List of obstacle positions
             { row: 1, col: 1 }, { row: 1, col: 2 }, { row: 1, col: 3 },
             { row: 3, col: 3 }, { row: 3, col: 4 }
         ];
-        const GOAL_REWARD = 10;
-        const OBSTACLE_PENALTY = -5;
-        const STEP_REWARD = -0.1;
 
-        // Aktionen
+        const GOAL_REWARD = 10;        // Reward for reaching the goal
+        const OBSTACLE_PENALTY = -10;  // Penalty for hitting an obstacle (more punitive)
+        const STEP_REWARD = -0.1;      // Cost of making a step
+        // --- END: GRID CONFIGURATION ---
+
         const ACTIONS = {
             UP:    { dr: -1, dc:  0, symbol: '↑' },
             DOWN:  { dr:  1, dc:  0, symbol: '↓' },
@@ -320,12 +322,10 @@
         };
         const ACTION_KEYS = Object.keys(ACTIONS);
 
-        // Parameter
         let GAMMA = 0.9;
-        const THETA = 0.001; // Schärfere Konvergenz
-        let animationSpeed = 500;
+        const THETA = 0.001; 
+        let animationSpeed = 500; // Default animation speed
 
-        // DOM-Elemente
         const gridContainer = document.getElementById('grid-container');
         const startValueIterationButton = document.getElementById('start-value-iteration');
         const animateAgentButton = document.getElementById('animate-agent');
@@ -337,7 +337,6 @@
         const deltaValue = document.getElementById('delta-value');
         const stepCount = document.getElementById('step-count');
 
-        // Zustand
         let V = [];
         let policy = [];
         let agentElement = null;
@@ -347,23 +346,28 @@
         let currentIteration = 0;
         let currentSteps = 0;
 
-        /**
-         * Initialisiert das Grid und alle Werte
-         */
+        function setControlsDisabled(disabled) {
+            startValueIterationButton.disabled = disabled;
+            resetGridButton.disabled = disabled;
+            gammaInput.disabled = disabled;
+            speedInput.disabled = disabled;
+            // AnimateAgentButton is handled separately based on policy availability
+        }
+
         function initializeGrid() {
             gridContainer.innerHTML = '';
-            gridContainer.style.gridTemplateRows = `repeat(${GRID_ROWS}, ${CELL_SIZE}px)`;
-            gridContainer.style.gridTemplateColumns = `repeat(${GRID_COLS}, ${CELL_SIZE}px)`;
+            gridContainer.style.gridTemplateRows = `repeat(${GRID_ROWS}, ${CELL_HEIGHT}px)`;
+            gridContainer.style.gridTemplateColumns = `repeat(${GRID_COLS}, ${CELL_WIDTH}px)`;
 
-            // Initialize arrays
             V = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(0));
             policy = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(null));
 
-            // Create grid cells
             for (let r = 0; r < GRID_ROWS; r++) {
                 for (let c = 0; c < GRID_COLS; c++) {
                     const cell = document.createElement('div');
                     cell.classList.add('grid-cell');
+                    cell.style.width = `${CELL_WIDTH}px`;
+                    cell.style.height = `${CELL_HEIGHT}px`;
                     cell.dataset.row = r;
                     cell.dataset.col = c;
 
@@ -375,19 +379,9 @@
                     policyArrow.classList.add('policy-arrow');
                     cell.appendChild(policyArrow);
 
-                    // Set cell types
-                    if (r === START_STATE.row && c === START_STATE.col) {
-                        cell.classList.add('start');
-                        cell.title = 'Startposition';
-                    } else if (r === GOAL_STATE.row && c === GOAL_STATE.col) {
-                        cell.classList.add('goal');
-                        cell.title = 'Zielposition';
-                    } else if (isObstacle(r, c)) {
-                        cell.classList.add('obstacle');
-                        cell.title = 'Hindernis';
-                    } else {
-                        cell.title = `Position (${r},${c})`;
-                    }
+                    if (r === START_STATE.row && c === START_STATE.col) cell.classList.add('start');
+                    else if (r === GOAL_STATE.row && c === GOAL_STATE.col) cell.classList.add('goal');
+                    else if (isObstacle(r, c)) cell.classList.add('obstacle');
                     
                     gridContainer.appendChild(cell);
                 }
@@ -396,33 +390,23 @@
             updateGridDisplay();
             placeAgent(START_STATE.row, START_STATE.col);
             resetStats();
-            updateUI('initialized');
+            setControlsDisabled(false);
+            animateAgentButton.disabled = true; // No policy yet
+            updateStatus('Bereit zum Start! Klicken Sie auf "Value Iteration starten".');
         }
 
-        /**
-         * Überprüft ob Position ein Hindernis ist
-         */
         function isObstacle(row, col) {
             return OBSTACLES.some(obs => obs.row === row && obs.col === col);
         }
 
-        /**
-         * Überprüft ob Position das Ziel ist
-         */
         function isGoal(row, col) {
             return row === GOAL_STATE.row && col === GOAL_STATE.col;
         }
 
-        /**
-         * Überprüft ob Position gültig ist
-         */
         function isValidPosition(row, col) {
             return row >= 0 && row < GRID_ROWS && col >= 0 && col < GRID_COLS;
         }
 
-        /**
-         * Platziert den Agenten
-         */
         function placeAgent(row, col) {
             if (!agentElement) {
                 agentElement = document.createElement('div');
@@ -430,14 +414,12 @@
                 gridContainer.appendChild(agentElement);
             }
             currentAgentPos = { row, col };
-            const offsetX = col * CELL_SIZE + (CELL_SIZE / 2 - 12);
-            const offsetY = row * CELL_SIZE + (CELL_SIZE / 2 - 12);
+            const agentSize = parseInt(window.getComputedStyle(agentElement).width); // Get actual agent size
+            const offsetX = col * CELL_WIDTH + (CELL_WIDTH - agentSize) / 2;
+            const offsetY = row * CELL_HEIGHT + (CELL_HEIGHT - agentSize) / 2;
             agentElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
         }
 
-        /**
-         * Aktualisiert die Grid-Anzeige
-         */
         function updateGridDisplay() {
             for (let r = 0; r < GRID_ROWS; r++) {
                 for (let c = 0; c < GRID_COLS; c++) {
@@ -446,87 +428,71 @@
                         const valueText = cell.querySelector('.value-text');
                         const policyArrow = cell.querySelector('.policy-arrow');
                         
-                        if (valueText) {
-                            valueText.textContent = V[r][c].toFixed(2);
-                        }
+                        if (valueText) valueText.textContent = V[r][c].toFixed(2);
                         
-                        if (policyArrow && policy[r][c]) {
-                            policyArrow.textContent = ACTIONS[policy[r][c]].symbol;
-                        } else if (policyArrow) {
-                            policyArrow.textContent = '';
+                        if (policyArrow) {
+                             policyArrow.textContent = policy[r][c] ? ACTIONS[policy[r][c]].symbol : '';
+                             // Make arrows less prominent in terminal states
+                             if (isGoal(r,c) || isObstacle(r,c)) {
+                                 policyArrow.style.opacity = '0.3';
+                             } else {
+                                 policyArrow.style.opacity = '1';
+                             }
                         }
                     }
                 }
             }
         }
 
-        /**
-         * Berechnet Q-Wert für einen Zustand-Aktion Paar
-         */
         function calculateQValue(row, col, actionKey) {
             const action = ACTIONS[actionKey];
             const nextRow = row + action.dr;
             const nextCol = col + action.dc;
 
-            // Prüfe Gültigkeit der nächsten Position
             if (!isValidPosition(nextRow, nextCol)) {
-                // Agent prallt an Wand ab, bleibt am Ort
-                return STEP_REWARD + GAMMA * V[row][col];
+                return STEP_REWARD + GAMMA * V[row][col]; // Wall bump
             }
-
-            // Prüfe Hindernis
             if (isObstacle(nextRow, nextCol)) {
-                // Agent prallt ab, erhält Penalty
+                 // If agent attempts to move into an obstacle, it stays put and gets penalty
                 return OBSTACLE_PENALTY + GAMMA * V[row][col];
             }
-
-            // Normale Bewegung
+            
             let reward = STEP_REWARD;
             if (isGoal(nextRow, nextCol)) {
                 reward = GOAL_REWARD;
             }
-
             return reward + GAMMA * V[nextRow][nextCol];
         }
 
-        /**
-         * Führt einen Value Iteration Schritt durch
-         */
         function performValueIterationStep() {
             let delta = 0;
-            const newV = V.map(row => [...row]); // Deep copy
+            const newV = V.map(rowArr => [...rowArr]);
 
             for (let r = 0; r < GRID_ROWS; r++) {
                 for (let c = 0; c < GRID_COLS; c++) {
-                    // Skip special cells
-                    if (isObstacle(r, c) || isGoal(r, c)) {
-                        if (isGoal(r, c)) {
-                            newV[r][c] = GOAL_REWARD;
-                        }
+                    if (isObstacle(r, c)) {
+                        // newV[r][c] = OBSTACLE_PENALTY; // Or keep 0 if agent can't be in obstacle
+                        newV[r][c] = 0; // Obstacles have no value to the agent
+                        continue;
+                    }
+                    if (isGoal(r, c)) {
+                        newV[r][c] = GOAL_REWARD;
                         continue;
                     }
 
                     const oldValue = V[r][c];
                     let maxQValue = -Infinity;
-
-                    // Find best action
                     for (const actionKey of ACTION_KEYS) {
-                        const qValue = calculateQValue(r, c, actionKey);
-                        maxQValue = Math.max(maxQValue, qValue);
+                        maxQValue = Math.max(maxQValue, calculateQValue(r, c, actionKey));
                     }
-
                     newV[r][c] = maxQValue;
                     delta = Math.max(delta, Math.abs(oldValue - newV[r][c]));
                 }
             }
-
             V = newV;
             return delta;
         }
 
-        /**
-         * Extrahiert optimale Policy
-         */
         function extractOptimalPolicy() {
             for (let r = 0; r < GRID_ROWS; r++) {
                 for (let c = 0; c < GRID_COLS; c++) {
@@ -534,10 +500,8 @@
                         policy[r][c] = null;
                         continue;
                     }
-
                     let bestAction = null;
                     let maxQValue = -Infinity;
-
                     for (const actionKey of ACTION_KEYS) {
                         const qValue = calculateQValue(r, c, actionKey);
                         if (qValue > maxQValue) {
@@ -545,15 +509,11 @@
                             bestAction = actionKey;
                         }
                     }
-
                     policy[r][c] = bestAction;
                 }
             }
         }
 
-        /**
-         * Startet Value Iteration
-         */
         function startValueIteration() {
             GAMMA = parseFloat(gammaInput.value) || 0.9;
             animationSpeed = parseInt(speedInput.value) || 500;
@@ -563,77 +523,89 @@
                 return;
             }
 
-            updateUI('running');
+            setControlsDisabled(true);
+            animateAgentButton.disabled = true; // Disable while VI runs initially
             updateStatus('Value Iteration gestartet...');
             currentIteration = 0;
+            placeAgent(START_STATE.row, START_STATE.col); // Reset agent position visually
+            currentSteps = 0; // Reset step count for animation
+            stepCount.textContent = currentSteps;
+
 
             valueIterationInterval = setInterval(() => {
                 const delta = performValueIterationStep();
                 currentIteration++;
-                
+                extractOptimalPolicy();
+                updateGridDisplay(); // Update V-values and policy arrows
                 updateStats(currentIteration, delta, currentSteps);
-                updateGridDisplay();
 
-                if (delta < THETA) {
+                // Enable animation button if a policy exists for the start state
+                animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
+
+
+                if (delta < THETA || currentIteration > GRID_ROWS * GRID_COLS * 10) { // Added max iteration guard
                     clearInterval(valueIterationInterval);
                     valueIterationInterval = null;
-                    extractOptimalPolicy();
-                    updateGridDisplay();
-                    updateStatus(`Konvergiert nach ${currentIteration} Iterationen!`);
-                    updateUI('converged');
+                    updateStatus(`Konvergiert nach ${currentIteration} Iterationen! Delta: ${delta.toFixed(Math.max(4,THETA.toString().split('.')[1]?.length || 0))}`);
+                    setControlsDisabled(false);
+                    // Final check for enabling animate button
+                    animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
                 } else {
                     updateStatus(`Iteration ${currentIteration}, Delta: ${delta.toFixed(4)}`);
                 }
-            }, Math.max(50, animationSpeed / 10));
+            }, Math.max(10, animationSpeed / 10)); // Ensure interval is not too slow for fast speeds
         }
 
-        /**
-         * Startet Agent Animation
-         */
         function startAgentAnimation() {
             placeAgent(START_STATE.row, START_STATE.col);
             currentSteps = 0;
-            updateUI('animating');
+            setControlsDisabled(true);
+            animateAgentButton.disabled = true;
             updateStatus('Agent folgt optimaler Policy...');
 
-            const maxSteps = GRID_ROWS * GRID_COLS * 3;
-            const visitedStates = new Set();
+            const maxAnimationSteps = GRID_ROWS * GRID_COLS * 2; // Max steps before assuming a loop or issue
+            const visitedStatesInAnimation = new Set();
 
             agentAnimationInterval = setInterval(() => {
                 const stateKey = `${currentAgentPos.row},${currentAgentPos.col}`;
-                
+
                 if (isGoal(currentAgentPos.row, currentAgentPos.col)) {
                     clearInterval(agentAnimationInterval);
                     agentAnimationInterval = null;
                     updateStatus(`🎉 Ziel erreicht in ${currentSteps} Schritten!`);
-                    updateUI('finished');
+                    setControlsDisabled(false);
+                    animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
                     return;
                 }
 
-                if (visitedStates.has(stateKey) && visitedStates.size > 5) {
+                if (visitedStatesInAnimation.has(stateKey)) {
+                     // Simple loop detection: if we return to a state we've been in this animation path
                     clearInterval(agentAnimationInterval);
                     agentAnimationInterval = null;
-                    updateStatus('⚠️ Agent läuft im Kreis - Policy möglicherweise suboptimal');
-                    updateUI('finished');
+                    updateStatus(`⚠️ Agent scheint im Kreis zu laufen (Schritt ${currentSteps}). Policy könnte suboptimal sein oder ein Fehler ist aufgetreten.`);
+                    setControlsDisabled(false);
+                    animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
                     return;
                 }
+                visitedStatesInAnimation.add(stateKey);
 
-                if (currentSteps > maxSteps) {
+
+                if (currentSteps >= maxAnimationSteps) {
                     clearInterval(agentAnimationInterval);
                     agentAnimationInterval = null;
-                    updateStatus('⚠️ Maximale Schrittanzahl erreicht');
-                    updateUI('finished');
+                    updateStatus(`⚠️ Maximale Schrittanzahl (${maxAnimationSteps}) für Animation erreicht.`);
+                    setControlsDisabled(false);
+                    animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
                     return;
                 }
 
-                visitedStates.add(stateKey);
                 const actionKey = policy[currentAgentPos.row][currentAgentPos.col];
-                
                 if (!actionKey) {
                     clearInterval(agentAnimationInterval);
                     agentAnimationInterval = null;
-                    updateStatus('❌ Keine Aktion definiert für aktuelle Position');
-                    updateUI('finished');
+                    updateStatus(`❌ Keine Aktion für (${currentAgentPos.row},${currentAgentPos.col}) definiert.`);
+                    setControlsDisabled(false);
+                    animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
                     return;
                 }
 
@@ -645,96 +617,56 @@
                     placeAgent(nextRow, nextCol);
                     currentSteps++;
                     updateStats(currentIteration, parseFloat(deltaValue.textContent), currentSteps);
+                } else {
+                    // Agent tried to move into wall or obstacle based on policy - this shouldn't happen with a good policy.
+                    clearInterval(agentAnimationInterval);
+                    agentAnimationInterval = null;
+                    updateStatus(`❓ Agent versuchte ungültigen Zug von (${currentAgentPos.row},${currentAgentPos.col}) mit Aktion ${actionKey}.`);
+                    setControlsDisabled(false);
+                    animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
                 }
             }, animationSpeed);
         }
 
-        /**
-         * Setzt alles zurück
-         */
         function resetAll() {
-            // Clear intervals
-            if (valueIterationInterval) {
-                clearInterval(valueIterationInterval);
-                valueIterationInterval = null;
-            }
-            if (agentAnimationInterval) {
-                clearInterval(agentAnimationInterval);
-                agentAnimationInterval = null;
-            }
+            if (valueIterationInterval) clearInterval(valueIterationInterval);
+            if (agentAnimationInterval) clearInterval(agentAnimationInterval);
+            valueIterationInterval = null;
+            agentAnimationInterval = null;
 
-            initializeGrid();
-            updateStatus('Grid zurückgesetzt - bereit für neuen Start!');
+            initializeGrid(); // This will re-initialize V, policy, UI elements and agent
+            updateStatus('Grid zurückgesetzt. Bereit für einen neuen Start!');
         }
 
-        /**
-         * Aktualisiert UI-Zustand
-         */
-        function updateUI(state) {
-            switch(state) {
-                case 'initialized':
-                    startValueIterationButton.disabled = false;
-                    animateAgentButton.disabled = true;
-                    resetGridButton.disabled = false;
-                    break;
-                case 'running':
-                    startValueIterationButton.disabled = true;
-                    animateAgentButton.disabled = true;
-                    resetGridButton.disabled = true;
-                    break;
-                case 'converged':
-                    startValueIterationButton.disabled = false;
-                    animateAgentButton.disabled = false;
-                    resetGridButton.disabled = false;
-                    break;
-                case 'animating':
-                    startValueIterationButton.disabled = true;
-                    animateAgentButton.disabled = true;
-                    resetGridButton.disabled = true;
-                    break;
-                case 'finished':
-                    startValueIterationButton.disabled = false;
-                    animateAgentButton.disabled = false;
-                    resetGridButton.disabled = false;
-                    break;
-            }
-        }
-
-        /**
-         * Aktualisiert Status-Nachricht
-         */
         function updateStatus(message, type = 'info') {
             statusMessage.textContent = message;
             statusMessage.style.color = type === 'error' ? '#dc2626' : '#4f46e5';
+             statusMessage.style.borderColor = type === 'error' ? '#dc2626' : '#4f46e5';
         }
 
-        /**
-         * Setzt Statistiken zurück
-         */
         function resetStats() {
             currentIteration = 0;
             currentSteps = 0;
             updateStats(0, 0, 0);
         }
 
-        /**
-         * Aktualisiert Statistiken
-         */
         function updateStats(iterations, delta, steps) {
             iterationCount.textContent = iterations;
-            deltaValue.textContent = delta.toFixed(4);
+            deltaValue.textContent = delta.toFixed(Math.max(4,THETA.toString().split('.')[1]?.length || 0));
             stepCount.textContent = steps;
         }
 
-        // Event Listeners
         startValueIterationButton.addEventListener('click', startValueIteration);
         animateAgentButton.addEventListener('click', startAgentAnimation);
         resetGridButton.addEventListener('click', resetAll);
         
-        gammaInput.addEventListener('input', (e) => {
+        gammaInput.addEventListener('change', (e) => { // Use change instead of input for number fields usually
             const value = parseFloat(e.target.value);
-            if (value >= 0 && value <= 1) {
+            if (!isNaN(value) && value >= 0 && value <= 1) {
                 GAMMA = value;
+            } else { // Revert to old value if invalid
+                e.target.value = GAMMA; 
+                updateStatus('Gamma muss zwischen 0 und 1 liegen.', 'error');
             }
         });
 
@@ -742,7 +674,6 @@
             animationSpeed = parseInt(e.target.value);
         });
 
-        // Initialisierung
         initializeGrid();
     </script>
 </body>
