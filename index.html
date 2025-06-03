@@ -1,1 +1,749 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gridworld mit Value Iteration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #1f2937;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .gridworld-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 800px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .grid {
+            display: grid;
+            border: 3px solid #4f46e5;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
+            border-radius: 12px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+        .grid-cell {
+            width: 70px;
+            height: 70px;
+            border: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.75rem;
+            position: relative;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+        }
+        .grid-cell:hover {
+            background-color: #f1f5f9;
+            transform: scale(1.05);
+        }
+        .grid-cell.start { 
+            background: linear-gradient(135deg, #10b981, #34d399);
+            color: white;
+            font-weight: bold;
+        }
+        .grid-cell.goal { 
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            font-weight: bold;
+        }
+        .grid-cell.obstacle { 
+            background: linear-gradient(135deg, #6b7280, #9ca3af);
+            color: white;
+        }
+        .grid-cell .value-text {
+            font-weight: 600;
+            color: #1e40af;
+            font-size: 0.8rem;
+            margin-bottom: 3px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        .grid-cell.start .value-text,
+        .grid-cell.goal .value-text,
+        .grid-cell.obstacle .value-text {
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .grid-cell .policy-arrow {
+            font-size: 1.4rem;
+            color: #dc2626;
+            position: absolute;
+            bottom: 8px;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        .agent {
+            width: 24px;
+            height: 24px;
+            background: radial-gradient(circle, #ef4444, #dc2626);
+            border-radius: 50%;
+            position: absolute;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            z-index: 20;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+        .controls button {
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        .controls button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+        }
+        .controls button:active:not(:disabled) {
+            transform: translateY(0);
+        }
+        .controls button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .controls input, .controls select {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            background-color: white;
+            color: #374151;
+            font-weight: 500;
+            transition: border-color 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .controls input:focus, .controls select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        .controls label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #374151;
+            font-weight: 500;
+        }
+        .parameter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(79, 70, 229, 0.1);
+            padding: 10px 15px;
+            border-radius: 10px;
+        }
+        #status-message {
+            margin-top: 20px;
+            font-weight: 600;
+            color: #4f46e5;
+            min-height: 25px;
+            text-align: center;
+            padding: 10px 20px;
+            background: rgba(79, 70, 229, 0.1);
+            border-radius: 10px;
+            border-left: 4px solid #4f46e5;
+        }
+        h1 {
+            color: #4f46e5;
+            margin-bottom: 25px;
+            font-size: 2.2rem;
+            text-align: center;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: rgba(79, 70, 229, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid rgba(79, 70, 229, 0.2);
+        }
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="gridworld-container">
+        <h1>🎯 Gridworld mit Value Iteration</h1>
 
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #10b981, #34d399);"></div>
+                <span>Start</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);"></div>
+                <span>Ziel</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: linear-gradient(135deg, #6b7280, #9ca3af);"></div>
+                <span>Hindernis</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: radial-gradient(circle, #ef4444, #dc2626);"></div>
+                <span>Agent</span>
+            </div>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-card">
+                <div class="stat-value" id="iteration-count">0</div>
+                <div class="stat-label">Iterationen</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="delta-value">0.00</div>
+                <div class="stat-label">Delta</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="step-count">0</div>
+                <div class="stat-label">Schritte</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="start-value-iteration">🚀 Value Iteration starten</button>
+            <button id="animate-agent" disabled>🤖 Agent animieren</button>
+            <button id="reset-grid">🔄 Zurücksetzen</button>
+            
+            <div class="parameter-group">
+                <label for="gamma-input">Gamma (γ):</label>
+                <input type="number" id="gamma-input" value="0.9" min="0" max="1" step="0.05">
+            </div>
+            
+            <div class="parameter-group">
+                <label for="speed-input">Geschwindigkeit:</label>
+                <select id="speed-input">
+                    <option value="1000">Langsam</option>
+                    <option value="500" selected>Normal</option>
+                    <option value="200">Schnell</option>
+                    <option value="50">Sehr schnell</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="grid-container" class="grid"></div>
+        <div id="status-message">Bereit zum Start! Klicke auf "Value Iteration starten".</div>
+    </div>
+
+    <script>
+        // Grid-Konfiguration
+        const GRID_ROWS = 5;
+        const GRID_COLS = 6;
+        const CELL_SIZE = 70;
+
+        // Zustände und Belohnungen
+        const START_STATE = { row: 2, col: 0 };
+        const GOAL_STATE = { row: 0, col: 5 };
+        const OBSTACLES = [
+            { row: 1, col: 1 }, { row: 1, col: 2 }, { row: 1, col: 3 },
+            { row: 3, col: 3 }, { row: 3, col: 4 }
+        ];
+        const GOAL_REWARD = 10;
+        const OBSTACLE_PENALTY = -5;
+        const STEP_REWARD = -0.1;
+
+        // Aktionen
+        const ACTIONS = {
+            UP:    { dr: -1, dc:  0, symbol: '↑' },
+            DOWN:  { dr:  1, dc:  0, symbol: '↓' },
+            LEFT:  { dr:  0, dc: -1, symbol: '←' },
+            RIGHT: { dr:  0, dc:  1, symbol: '→' }
+        };
+        const ACTION_KEYS = Object.keys(ACTIONS);
+
+        // Parameter
+        let GAMMA = 0.9;
+        const THETA = 0.001; // Schärfere Konvergenz
+        let animationSpeed = 500;
+
+        // DOM-Elemente
+        const gridContainer = document.getElementById('grid-container');
+        const startValueIterationButton = document.getElementById('start-value-iteration');
+        const animateAgentButton = document.getElementById('animate-agent');
+        const resetGridButton = document.getElementById('reset-grid');
+        const gammaInput = document.getElementById('gamma-input');
+        const speedInput = document.getElementById('speed-input');
+        const statusMessage = document.getElementById('status-message');
+        const iterationCount = document.getElementById('iteration-count');
+        const deltaValue = document.getElementById('delta-value');
+        const stepCount = document.getElementById('step-count');
+
+        // Zustand
+        let V = [];
+        let policy = [];
+        let agentElement = null;
+        let currentAgentPos = { ...START_STATE };
+        let valueIterationInterval = null;
+        let agentAnimationInterval = null;
+        let currentIteration = 0;
+        let currentSteps = 0;
+
+        /**
+         * Initialisiert das Grid und alle Werte
+         */
+        function initializeGrid() {
+            gridContainer.innerHTML = '';
+            gridContainer.style.gridTemplateRows = `repeat(${GRID_ROWS}, ${CELL_SIZE}px)`;
+            gridContainer.style.gridTemplateColumns = `repeat(${GRID_COLS}, ${CELL_SIZE}px)`;
+
+            // Initialize arrays
+            V = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(0));
+            policy = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(null));
+
+            // Create grid cells
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('grid-cell');
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+
+                    const valueText = document.createElement('span');
+                    valueText.classList.add('value-text');
+                    cell.appendChild(valueText);
+
+                    const policyArrow = document.createElement('span');
+                    policyArrow.classList.add('policy-arrow');
+                    cell.appendChild(policyArrow);
+
+                    // Set cell types
+                    if (r === START_STATE.row && c === START_STATE.col) {
+                        cell.classList.add('start');
+                        cell.title = 'Startposition';
+                    } else if (r === GOAL_STATE.row && c === GOAL_STATE.col) {
+                        cell.classList.add('goal');
+                        cell.title = 'Zielposition';
+                    } else if (isObstacle(r, c)) {
+                        cell.classList.add('obstacle');
+                        cell.title = 'Hindernis';
+                    } else {
+                        cell.title = `Position (${r},${c})`;
+                    }
+                    
+                    gridContainer.appendChild(cell);
+                }
+            }
+
+            updateGridDisplay();
+            placeAgent(START_STATE.row, START_STATE.col);
+            resetStats();
+            updateUI('initialized');
+        }
+
+        /**
+         * Überprüft ob Position ein Hindernis ist
+         */
+        function isObstacle(row, col) {
+            return OBSTACLES.some(obs => obs.row === row && obs.col === col);
+        }
+
+        /**
+         * Überprüft ob Position das Ziel ist
+         */
+        function isGoal(row, col) {
+            return row === GOAL_STATE.row && col === GOAL_STATE.col;
+        }
+
+        /**
+         * Überprüft ob Position gültig ist
+         */
+        function isValidPosition(row, col) {
+            return row >= 0 && row < GRID_ROWS && col >= 0 && col < GRID_COLS;
+        }
+
+        /**
+         * Platziert den Agenten
+         */
+        function placeAgent(row, col) {
+            if (!agentElement) {
+                agentElement = document.createElement('div');
+                agentElement.classList.add('agent');
+                gridContainer.appendChild(agentElement);
+            }
+            currentAgentPos = { row, col };
+            const offsetX = col * CELL_SIZE + (CELL_SIZE / 2 - 12);
+            const offsetY = row * CELL_SIZE + (CELL_SIZE / 2 - 12);
+            agentElement.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+        }
+
+        /**
+         * Aktualisiert die Grid-Anzeige
+         */
+        function updateGridDisplay() {
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    const cell = gridContainer.querySelector(`[data-row='${r}'][data-col='${c}']`);
+                    if (cell) {
+                        const valueText = cell.querySelector('.value-text');
+                        const policyArrow = cell.querySelector('.policy-arrow');
+                        
+                        if (valueText) {
+                            valueText.textContent = V[r][c].toFixed(2);
+                        }
+                        
+                        if (policyArrow && policy[r][c]) {
+                            policyArrow.textContent = ACTIONS[policy[r][c]].symbol;
+                        } else if (policyArrow) {
+                            policyArrow.textContent = '';
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Berechnet Q-Wert für einen Zustand-Aktion Paar
+         */
+        function calculateQValue(row, col, actionKey) {
+            const action = ACTIONS[actionKey];
+            const nextRow = row + action.dr;
+            const nextCol = col + action.dc;
+
+            // Prüfe Gültigkeit der nächsten Position
+            if (!isValidPosition(nextRow, nextCol)) {
+                // Agent prallt an Wand ab, bleibt am Ort
+                return STEP_REWARD + GAMMA * V[row][col];
+            }
+
+            // Prüfe Hindernis
+            if (isObstacle(nextRow, nextCol)) {
+                // Agent prallt ab, erhält Penalty
+                return OBSTACLE_PENALTY + GAMMA * V[row][col];
+            }
+
+            // Normale Bewegung
+            let reward = STEP_REWARD;
+            if (isGoal(nextRow, nextCol)) {
+                reward = GOAL_REWARD;
+            }
+
+            return reward + GAMMA * V[nextRow][nextCol];
+        }
+
+        /**
+         * Führt einen Value Iteration Schritt durch
+         */
+        function performValueIterationStep() {
+            let delta = 0;
+            const newV = V.map(row => [...row]); // Deep copy
+
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    // Skip special cells
+                    if (isObstacle(r, c) || isGoal(r, c)) {
+                        if (isGoal(r, c)) {
+                            newV[r][c] = GOAL_REWARD;
+                        }
+                        continue;
+                    }
+
+                    const oldValue = V[r][c];
+                    let maxQValue = -Infinity;
+
+                    // Find best action
+                    for (const actionKey of ACTION_KEYS) {
+                        const qValue = calculateQValue(r, c, actionKey);
+                        maxQValue = Math.max(maxQValue, qValue);
+                    }
+
+                    newV[r][c] = maxQValue;
+                    delta = Math.max(delta, Math.abs(oldValue - newV[r][c]));
+                }
+            }
+
+            V = newV;
+            return delta;
+        }
+
+        /**
+         * Extrahiert optimale Policy
+         */
+        function extractOptimalPolicy() {
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    if (isObstacle(r, c) || isGoal(r, c)) {
+                        policy[r][c] = null;
+                        continue;
+                    }
+
+                    let bestAction = null;
+                    let maxQValue = -Infinity;
+
+                    for (const actionKey of ACTION_KEYS) {
+                        const qValue = calculateQValue(r, c, actionKey);
+                        if (qValue > maxQValue) {
+                            maxQValue = qValue;
+                            bestAction = actionKey;
+                        }
+                    }
+
+                    policy[r][c] = bestAction;
+                }
+            }
+        }
+
+        /**
+         * Startet Value Iteration
+         */
+        function startValueIteration() {
+            GAMMA = parseFloat(gammaInput.value) || 0.9;
+            animationSpeed = parseInt(speedInput.value) || 500;
+
+            if (GAMMA < 0 || GAMMA > 1) {
+                updateStatus('Ungültiges Gamma! Wert muss zwischen 0 und 1 liegen.', 'error');
+                return;
+            }
+
+            updateUI('running');
+            updateStatus('Value Iteration gestartet...');
+            currentIteration = 0;
+
+            valueIterationInterval = setInterval(() => {
+                const delta = performValueIterationStep();
+                currentIteration++;
+                
+                updateStats(currentIteration, delta, currentSteps);
+                updateGridDisplay();
+
+                if (delta < THETA) {
+                    clearInterval(valueIterationInterval);
+                    valueIterationInterval = null;
+                    extractOptimalPolicy();
+                    updateGridDisplay();
+                    updateStatus(`Konvergiert nach ${currentIteration} Iterationen!`);
+                    updateUI('converged');
+                } else {
+                    updateStatus(`Iteration ${currentIteration}, Delta: ${delta.toFixed(4)}`);
+                }
+            }, Math.max(50, animationSpeed / 10));
+        }
+
+        /**
+         * Startet Agent Animation
+         */
+        function startAgentAnimation() {
+            placeAgent(START_STATE.row, START_STATE.col);
+            currentSteps = 0;
+            updateUI('animating');
+            updateStatus('Agent folgt optimaler Policy...');
+
+            const maxSteps = GRID_ROWS * GRID_COLS * 3;
+            const visitedStates = new Set();
+
+            agentAnimationInterval = setInterval(() => {
+                const stateKey = `${currentAgentPos.row},${currentAgentPos.col}`;
+                
+                if (isGoal(currentAgentPos.row, currentAgentPos.col)) {
+                    clearInterval(agentAnimationInterval);
+                    agentAnimationInterval = null;
+                    updateStatus(`🎉 Ziel erreicht in ${currentSteps} Schritten!`);
+                    updateUI('finished');
+                    return;
+                }
+
+                if (visitedStates.has(stateKey) && visitedStates.size > 5) {
+                    clearInterval(agentAnimationInterval);
+                    agentAnimationInterval = null;
+                    updateStatus('⚠️ Agent läuft im Kreis - Policy möglicherweise suboptimal');
+                    updateUI('finished');
+                    return;
+                }
+
+                if (currentSteps > maxSteps) {
+                    clearInterval(agentAnimationInterval);
+                    agentAnimationInterval = null;
+                    updateStatus('⚠️ Maximale Schrittanzahl erreicht');
+                    updateUI('finished');
+                    return;
+                }
+
+                visitedStates.add(stateKey);
+                const actionKey = policy[currentAgentPos.row][currentAgentPos.col];
+                
+                if (!actionKey) {
+                    clearInterval(agentAnimationInterval);
+                    agentAnimationInterval = null;
+                    updateStatus('❌ Keine Aktion definiert für aktuelle Position');
+                    updateUI('finished');
+                    return;
+                }
+
+                const action = ACTIONS[actionKey];
+                const nextRow = currentAgentPos.row + action.dr;
+                const nextCol = currentAgentPos.col + action.dc;
+
+                if (isValidPosition(nextRow, nextCol) && !isObstacle(nextRow, nextCol)) {
+                    placeAgent(nextRow, nextCol);
+                    currentSteps++;
+                    updateStats(currentIteration, parseFloat(deltaValue.textContent), currentSteps);
+                }
+            }, animationSpeed);
+        }
+
+        /**
+         * Setzt alles zurück
+         */
+        function resetAll() {
+            // Clear intervals
+            if (valueIterationInterval) {
+                clearInterval(valueIterationInterval);
+                valueIterationInterval = null;
+            }
+            if (agentAnimationInterval) {
+                clearInterval(agentAnimationInterval);
+                agentAnimationInterval = null;
+            }
+
+            initializeGrid();
+            updateStatus('Grid zurückgesetzt - bereit für neuen Start!');
+        }
+
+        /**
+         * Aktualisiert UI-Zustand
+         */
+        function updateUI(state) {
+            switch(state) {
+                case 'initialized':
+                    startValueIterationButton.disabled = false;
+                    animateAgentButton.disabled = true;
+                    resetGridButton.disabled = false;
+                    break;
+                case 'running':
+                    startValueIterationButton.disabled = true;
+                    animateAgentButton.disabled = true;
+                    resetGridButton.disabled = true;
+                    break;
+                case 'converged':
+                    startValueIterationButton.disabled = false;
+                    animateAgentButton.disabled = false;
+                    resetGridButton.disabled = false;
+                    break;
+                case 'animating':
+                    startValueIterationButton.disabled = true;
+                    animateAgentButton.disabled = true;
+                    resetGridButton.disabled = true;
+                    break;
+                case 'finished':
+                    startValueIterationButton.disabled = false;
+                    animateAgentButton.disabled = false;
+                    resetGridButton.disabled = false;
+                    break;
+            }
+        }
+
+        /**
+         * Aktualisiert Status-Nachricht
+         */
+        function updateStatus(message, type = 'info') {
+            statusMessage.textContent = message;
+            statusMessage.style.color = type === 'error' ? '#dc2626' : '#4f46e5';
+        }
+
+        /**
+         * Setzt Statistiken zurück
+         */
+        function resetStats() {
+            currentIteration = 0;
+            currentSteps = 0;
+            updateStats(0, 0, 0);
+        }
+
+        /**
+         * Aktualisiert Statistiken
+         */
+        function updateStats(iterations, delta, steps) {
+            iterationCount.textContent = iterations;
+            deltaValue.textContent = delta.toFixed(4);
+            stepCount.textContent = steps;
+        }
+
+        // Event Listeners
+        startValueIterationButton.addEventListener('click', startValueIteration);
+        animateAgentButton.addEventListener('click', startAgentAnimation);
+        resetGridButton.addEventListener('click', resetAll);
+        
+        gammaInput.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            if (value >= 0 && value <= 1) {
+                GAMMA = value;
+            }
+        });
+
+        speedInput.addEventListener('change', (e) => {
+            animationSpeed = parseInt(e.target.value);
+        });
+
+        // Initialisierung
+        initializeGrid();
+    </script>
+</body>
+</html>
