@@ -22,61 +22,62 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.97); /* Slightly more opaque */
             backdrop-filter: blur(10px);
-            padding: 30px;
+            padding: 25px; /* Adjusted */
             border-radius: 20px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
             width: 100%;
-            max-width: 900px; /* Increased for config panel */
+            max-width: 950px; /* Increased for more controls */
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
         .grid {
             display: grid;
             border: 3px solid #4f46e5;
-            margin-bottom: 25px;
+            margin-bottom: 20px; /* Adjusted */
             box-shadow: 0 8px 25px rgba(79, 70, 229, 0.3);
             border-radius: 12px;
             overflow: hidden;
-            background: #ffffff;
+            /* background set by JS or cell types */
         }
         .grid-cell {
-            width: 50px; /* Default, can be overridden by JS */
-            height: 50px;/* Default, can be overridden by JS */
-            border: 1px solid #e5e7eb;
+            width: 45px; 
+            height: 45px;
+            border: 1px solid #e0e0e0; /* Lighter border */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-size: 0.6rem;
+            font-size: 0.55rem; /* Smaller for more dense info */
             position: relative;
-            background-color: #f8fafc;
-            transition: all 0.3s ease;
+            background-color: #f8fafc; /* Default background */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            cursor: default; /* Default cursor */
         }
-        .grid-cell:hover {
-            background-color: #f1f5f9;
-            transform: scale(1.05);
+        .grid-cell.interactive-obstacle:hover {
+            background-color: #e2e8f0; /* Hover for obstacle placement */
+            transform: scale(1.03);
         }
         .grid-cell.start {
-            background: linear-gradient(135deg, #10b981, #34d399);
+            background: linear-gradient(135deg, #10b981, #34d399) !important;
             color: white;
             font-weight: bold;
         }
         .grid-cell.goal {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
             color: white;
             font-weight: bold;
         }
         .grid-cell.obstacle {
-            background: linear-gradient(135deg, #6b7280, #9ca3af);
+            background: linear-gradient(135deg, #6b7280, #9ca3af) !important;
             color: white;
         }
         .grid-cell .value-text {
             font-weight: 600;
             color: #1e40af;
-            font-size: 0.7rem;
+            font-size: 0.65rem; /* Adjusted */
             margin-bottom: 1px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            text-shadow: 0 1px 1px rgba(255,255,255,0.5); /* Lighter shadow for dark text */
         }
         .grid-cell.start .value-text,
         .grid-cell.goal .value-text,
@@ -85,69 +86,86 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.3);
         }
         .grid-cell .policy-arrow {
-            font-size: 1.1rem;
-            color: #dc2626;
+            font-size: 1rem; /* Adjusted */
+            color: #c00303; /* Darker red */
             position: absolute;
-            bottom: 3px;
+            bottom: 2px; /* Adjusted */
             font-weight: bold;
             text-shadow: 0 1px 2px rgba(0,0,0,0.2);
         }
         .agent {
-            width: 18px; 
-            height: 18px;
+            width: 16px; 
+            height: 16px;
             background: radial-gradient(circle, #ef4444, #dc2626);
             border-radius: 50%;
             position: absolute;
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Faster transition */
             z-index: 20;
             border: 2px solid white; 
-            box-shadow: 0 3px 10px rgba(220, 38, 38, 0.4);
+            box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4); /* Adjusted */
         }
-        .controls, .config-panel {
+        .panel-section {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            background: rgba(236, 239, 241, 0.7); /* Light background for panels */
+            border-radius: 10px;
+            border: 1px solid rgba(79, 70, 229, 0.1);
+        }
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4f46e5;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(79, 70, 229, 0.2);
+        }
+
+        .config-panel-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            align-items: end; /* Align items to bottom for better layout with textarea */
+        }
+
+        .controls, .config-panel-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 10px; /* Reduced */
             justify-content: center;
             align-items: center;
-            width: 100%;
         }
-        .config-panel {
-             background: rgba(79, 70, 229, 0.05);
-             padding: 15px;
-             border-radius: 10px;
-             border: 1px solid rgba(79, 70, 229, 0.1);
-        }
+      
         .config-group {
             display: flex;
             flex-direction: column;
             gap: 4px;
+            min-width: 120px; /* Ensure some width */
         }
         .config-group label {
             font-size: 0.8rem;
             font-weight: 500;
             color: #374151;
         }
-        .config-group input[type="number"], .config-group input[type="text"], .config-group textarea {
+        .config-group input[type="number"], .config-group input[type="text"], 
+        .config-group textarea, .config-group select {
             padding: 8px 10px;
             border-radius: 6px;
             border: 1px solid #d1d5db;
             background-color: white;
             color: #374151;
             font-size: 0.85rem;
-            width: 100px; /* Default width for some inputs */
-        }
-         .config-group input[name="start-state"], .config-group input[name="goal-state"] {
-            width: 80px;
+            width: 100%; /* Full width within group */
+            box-sizing: border-box;
         }
         .config-group textarea {
-            width: 150px; /* For obstacles */
-            height: 70px;
+            min-height: 70px;
             font-family: monospace;
         }
 
-        .controls button, .config-panel button {
-            padding: 10px 18px;
+        .controls button, .panel-section button {
+            padding: 9px 16px; /* Adjusted */
             border-radius: 8px;
             border: none;
             background: linear-gradient(135deg, #4f46e5, #7c3aed);
@@ -155,198 +173,189 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-size: 0.85rem;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            font-size: 0.8rem; /* Adjusted */
+            box-shadow: 0 3px 10px rgba(79, 70, 229, 0.25); /* Adjusted */
         }
-        .controls button:hover:not(:disabled), .config-panel button:hover:not(:disabled) {
+        .controls button:hover:not(:disabled), .panel-section button:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+            box-shadow: 0 6px 15px rgba(79, 70, 229, 0.35); /* Adjusted */
         }
-        .controls button:active:not(:disabled), .config-panel button:active:not(:disabled) {
-            transform: translateY(0);
-        }
-        .controls button:disabled, .config-panel button:disabled {
+        .controls button:disabled, .panel-section button:disabled {
             background: #9ca3af;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
-        .controls input, .controls select {
-            padding: 8px 12px;
+        .controls input, .controls select { /* For Gamma, Speed */
+            padding: 8px 10px;
             border-radius: 6px;
-            border: 2px solid #e5e7eb;
-            background-color: white;
-            color: #374151;
-            font-weight: 500;
-            transition: border-color 0.3s ease;
-            font-size: 0.85rem;
+            border: 1px solid #d1d5db;
         }
-        .controls input:focus, .controls select:focus,
-        .config-group input:focus, .config-group textarea:focus {
+        input:focus, select:focus, textarea:focus {
             outline: none;
             border-color: #4f46e5;
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
-        .controls label.param-label { /* Differentiate from config labels */
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85rem;
-            color: #374151;
-            font-weight: 500;
-        }
-        .parameter-group {
+        .parameter-group { /* For Gamma, Speed */
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(79, 70, 229, 0.1);
+            background: rgba(224, 224, 224, 0.2); /* Subtler */
             padding: 8px 12px;
             border-radius: 8px;
         }
         #status-message {
-            margin-top: 15px; /* Reduced margin */
+            margin-top: 15px;
             font-weight: 600;
             color: #4f46e5;
             min-height: 25px;
             text-align: center;
             padding: 10px 20px;
-            background: rgba(79, 70, 229, 0.1);
+            background: rgba(79, 70, 229, 0.05); /* Lighter */
             border-radius: 10px;
             border-left: 4px solid #4f46e5;
             width: 100%;
+            box-sizing: border-box;
         }
         h1 {
             color: #4f46e5;
-            margin-bottom: 15px; /* Reduced margin */
-            font-size: 2.0rem;
+            margin-bottom: 15px;
+            font-size: 1.8rem; /* Adjusted */
             text-align: center;
-            font-weight: 700;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .stats-panel {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjusted */
             gap: 10px;
             width: 100%;
-            margin-bottom: 15px; /* Reduced margin */
+            margin-bottom: 15px;
         }
         .stat-card {
-            background: rgba(79, 70, 229, 0.1);
+            background: rgba(224, 224, 224, 0.2); /* Subtler */
             padding: 10px;
             border-radius: 8px;
-            text-align: center;
-            border: 1px solid rgba(79, 70, 229, 0.2);
         }
-        .stat-value {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: #4f46e5;
-        }
-        .stat-label {
-            font-size: 0.75rem;
-            color: #6b7280;
-            margin-top: 4px;
-        }
-        .legend {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 10px; /* Reduced margin */
-            flex-wrap: wrap;
-        }
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-        }
-        .legend-color {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-            border: 1px solid rgba(0,0,0,0.2);
-        }
+        .stat-value { font-size: 1.2rem; color: #4f46e5; } /* Adjusted */
+        .stat-label { font-size: 0.7rem; color: #525252;} /* Adjusted */
+
+        .legend { margin-bottom: 10px; }
+        .legend-item { font-size: 0.75rem; } /* Adjusted */
+        .legend-color { width: 16px; height: 16px; } /* Adjusted */
     </style>
 </head>
 <body>
     <div class="gridworld-container">
-        <h1>🎯 Gridworld mit Value Iteration</h1>
+        <h1>Gridworld Explorer 探索者</h1>
 
-        <div class="config-panel">
-            <div class="config-group">
-                <label for="config-rows">Grid Rows:</label>
-                <input type="number" id="config-rows" name="config-rows" min="2" max="20" value="5">
+        <div class="panel-section">
+            <div class="panel-title">Grid Konfiguration</div>
+            <div class="config-panel-grid">
+                <div class="config-group">
+                    <label for="scenario-select">Vordefinierte Szenarien:</label>
+                    <select id="scenario-select" name="scenario-select"></select>
+                </div>
+                 <div class="config-group">
+                    <label for="config-rows">Grid Zeilen:</label>
+                    <input type="number" id="config-rows" name="config-rows" min="2" max="25" value="5">
+                </div>
+                <div class="config-group">
+                    <label for="config-cols">Grid Spalten:</label>
+                    <input type="number" id="config-cols" name="config-cols" min="2" max="25" value="6">
+                </div>
+                <div class="config-group">
+                    <label for="config-start">Start (Z,S):</label>
+                    <input type="text" id="config-start" name="start-state" placeholder="z.B., 2,0">
+                </div>
+                <div class="config-group">
+                    <label for="config-goal">Ziel (Z,S):</label>
+                    <input type="text" id="config-goal" name="goal-state" placeholder="z.B., 0,5">
+                </div>
+                <div class="config-group" style="grid-column: span 2;"> <label for="config-obstacles">Hindernisse (Z,S pro Zeile):</label>
+                    <textarea id="config-obstacles" name="obstacles"></textarea>
+                </div>
             </div>
-            <div class="config-group">
-                <label for="config-cols">Grid Columns:</label>
-                <input type="number" id="config-cols" name="config-cols" min="2" max="20" value="6">
+             <div style="text-align: center; margin-top: 15px;">
+                <button id="apply-config">⚙️ Konfig anwenden & Reset</button>
             </div>
-            <div class="config-group">
-                <label for="config-start">Start (row,col):</label>
-                <input type="text" id="config-start" name="start-state" placeholder="e.g., 2,0">
-            </div>
-            <div class="config-group">
-                <label for="config-goal">Goal (row,col):</label>
-                <input type="text" id="config-goal" name="goal-state" placeholder="e.g., 0,5">
-            </div>
-            <div class="config-group">
-                <label for="config-obstacles">Obstacles (r,c per line):</label>
-                <textarea id="config-obstacles" name="obstacles"></textarea>
-            </div>
-            <button id="apply-config">⚙️ Konfig anwenden & Reset</button>
         </div>
-
+        
         <div class="legend">
-             <div class="legend-item"><div class="legend-color" style="background: linear-gradient(135deg, #10b981, #34d399);"></div><span>Start</span></div>
+            <div class="legend-item"><div class="legend-color" style="background: linear-gradient(135deg, #10b981, #34d399);"></div><span>Start</span></div>
             <div class="legend-item"><div class="legend-color" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);"></div><span>Ziel</span></div>
             <div class="legend-item"><div class="legend-color" style="background: linear-gradient(135deg, #6b7280, #9ca3af);"></div><span>Hindernis</span></div>
             <div class="legend-item"><div class="legend-color" style="background: radial-gradient(circle, #ef4444, #dc2626);"></div><span>Agent</span></div>
+             <div class="legend-item"><div class="legend-color" style="background-color: #edf2fb;"></div><span>Niedriger Wert</span></div>
+             <div class="legend-item"><div class="legend-color" style="background-color: #65a30d;"></div><span>Hoher Wert</span></div>
         </div>
 
         <div class="stats-panel">
             <div class="stat-card"><div class="stat-value" id="iteration-count">0</div><div class="stat-label">Iterationen</div></div>
-            <div class="stat-card"><div class="stat-value" id="delta-value">0.00</div><div class="stat-label">Delta</div></div>
+            <div class="stat-card"><div class="stat-value" id="delta-value">0.000</div><div class="stat-label">Delta</div></div>
             <div class="stat-card"><div class="stat-value" id="step-count">0</div><div class="stat-label">Schritte</div></div>
         </div>
 
         <div class="controls">
-            <button id="start-value-iteration">🚀 Value Iteration starten</button>
+            <button id="start-value-iteration">🚀 Value Iteration</button>
             <button id="animate-agent" disabled>🤖 Agent animieren</button>
             <button id="reset-grid">🔄 Aktuelles Grid zurücksetzen</button>
-            
             <div class="parameter-group">
-                <label for="gamma-input" class="param-label">Gamma (γ):</label>
+                <label for="gamma-input">Gamma (γ):</label>
                 <input type="number" id="gamma-input" value="0.9" min="0" max="1" step="0.05">
             </div>
-            
             <div class="parameter-group">
-                <label for="speed-input" class="param-label">Geschwindigkeit:</label>
+                <label for="speed-input">Geschwindigkeit:</label>
                 <select id="speed-input">
                     <option value="1000">Langsam</option>
                     <option value="500" selected>Normal</option>
                     <option value="200">Schnell</option>
                     <option value="50">Sehr schnell</option>
+                    <option value="10">Blitz</option>
                 </select>
             </div>
         </div>
 
         <div id="grid-container" class="grid"></div>
-        <div id="status-message">Standardkonfiguration geladen.</div>
+        <div id="status-message">Standardkonfiguration geladen. Klicke auf Zellen, um Hindernisse zu setzen/entfernen.</div>
     </div>
 
     <script>
-        // --- DEFAULT GRID CONFIGURATION ---
-        // These are now defaults and will be overridden by UI if "Apply Configuration" is used.
+        // --- DEFAULT GRID CONFIGURATION & SCENARIOS ---
         let GRID_ROWS = 5;
         let GRID_COLS = 6;
-        let CELL_WIDTH = 50; 
-        let CELL_HEIGHT = 50;
+        let CELL_WIDTH = 45; 
+        let CELL_HEIGHT = 45;
 
         let START_STATE = { row: 2, col: 0 };
         let GOAL_STATE = { row: 0, col: 5 };
         let OBSTACLES = [
             { row: 1, col: 1 }, { row: 1, col: 2 }, { row: 1, col: 3 },
             { row: 3, col: 3 }, { row: 3, col: 4 }
+        ];
+
+        const PREDEFINED_SCENARIOS = [
+            {
+                name: "Standard",
+                rows: 5, cols: 6, start: { row: 2, col: 0 }, goal: { row: 0, col: 5 },
+                obstacles: [ { r: 1, c: 1 }, { r: 1, c: 2 }, { r: 1, c: 3 }, { r: 3, c: 3 }, { r: 3, c: 4 }]
+            },
+            {
+                name: "Leeres Feld",
+                rows: 4, cols: 5, start: { row: 3, col: 0 }, goal: { row: 0, col: 4 }, obstacles: []
+            },
+            {
+                name: "Einfaches Labyrinth",
+                rows: 7, cols: 7, start: { row: 6, col: 0 }, goal: { row: 0, col: 6 },
+                obstacles: [
+                    { r: 1, c: 1 }, { r: 1, c: 2 }, { r: 1, c: 3 }, { r: 1, c: 4 }, { r: 1, c: 5 },
+                    { r: 3, c: 1 }, { r: 3, c: 2 }, { r: 3, c: 3 }, { r: 3, c: 4 }, { r: 3, c: 5 },
+                    { r: 5, c: 1 }, { r: 5, c: 2 }, { r: 5, c: 3 }, { r: 5, c: 4 }, { r: 5, c: 5 }
+                ]
+            },
+            {
+                name: "Engpass",
+                rows: 5, cols: 7, start: { row: 2, col: 0 }, goal: { row: 2, col: 6 },
+                obstacles: [
+                    { r: 0, c: 3 }, { r: 1, c: 3 }, { r: 3, c: 3 }, { r: 4, c: 3 }
+                ]
+            }
         ];
 
         const GOAL_REWARD = 10;
@@ -363,13 +372,13 @@
         const ACTION_KEYS = Object.keys(ACTIONS);
 
         let GAMMA = 0.9;
-        const THETA = 0.001; 
+        const THETA = 0.0001; // More precision for delta display
         let animationSpeed = 500;
 
         const gridContainer = document.getElementById('grid-container');
         const startValueIterationButton = document.getElementById('start-value-iteration');
         const animateAgentButton = document.getElementById('animate-agent');
-        const resetGridButton = document.getElementById('reset-grid'); // Renamed for clarity
+        const resetGridButton = document.getElementById('reset-grid');
         const gammaInput = document.getElementById('gamma-input');
         const speedInput = document.getElementById('speed-input');
         const statusMessage = document.getElementById('status-message');
@@ -377,7 +386,7 @@
         const deltaValue = document.getElementById('delta-value');
         const stepCount = document.getElementById('step-count');
 
-        // Config UI Elements
+        const scenarioSelect = document.getElementById('scenario-select');
         const configRowsInput = document.getElementById('config-rows');
         const configColsInput = document.getElementById('config-cols');
         const configStartInput = document.getElementById('config-start');
@@ -388,18 +397,44 @@
         let V = [];
         let policy = [];
         let agentElement = null;
-        let currentAgentPos = { ...START_STATE }; // Initialize with default
+        let currentAgentPos = { ...START_STATE };
         let valueIterationInterval = null;
         let agentAnimationInterval = null;
         let currentIteration = 0;
         let currentSteps = 0;
+        let minV = 0, maxV = 0; // For heatmap normalization
 
-        function populateConfigUI() {
+        function populateConfigUIWithCurrentGlobals() {
             configRowsInput.value = GRID_ROWS;
             configColsInput.value = GRID_COLS;
             configStartInput.value = `${START_STATE.row},${START_STATE.col}`;
             configGoalInput.value = `${GOAL_STATE.row},${GOAL_STATE.col}`;
             configObstaclesInput.value = OBSTACLES.map(obs => `${obs.row},${obs.col}`).join('\n');
+        }
+        
+        function loadScenario(scenario) {
+            GRID_ROWS = scenario.rows;
+            GRID_COLS = scenario.cols;
+            START_STATE = { ...scenario.start };
+            GOAL_STATE = { ...scenario.goal };
+            OBSTACLES = scenario.obstacles.map(obs => ({ ...obs })); // Deep copy
+            populateConfigUIWithCurrentGlobals();
+            applyConfiguration(false); // Apply without confirmation, from scenario
+        }
+
+        function populateScenarioDropdown() {
+            PREDEFINED_SCENARIOS.forEach((scenario, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = scenario.name;
+                scenarioSelect.appendChild(option);
+            });
+            scenarioSelect.addEventListener('change', (e) => {
+                const selectedScenario = PREDEFINED_SCENARIOS[parseInt(e.target.value)];
+                if (selectedScenario) {
+                    loadScenario(selectedScenario);
+                }
+            });
         }
 
         function parseCoordinateString(str, maxRow, maxCol) {
@@ -407,39 +442,33 @@
             if (parts.length !== 2) return null;
             const r = parseInt(parts[0].trim());
             const c = parseInt(parts[1].trim());
-            if (isNaN(r) || isNaN(c) || r < 0 || r >= maxRow || c < 0 || c >= maxCol) {
-                return null;
-            }
+            if (isNaN(r) || isNaN(c) || r < 0 || r >= maxRow || c < 0 || c >= maxCol) return null;
             return { row: r, col: c };
         }
         
-        function applyConfiguration() {
+        function applyConfiguration(showAlerts = true) {
             if (valueIterationInterval) clearInterval(valueIterationInterval);
             if (agentAnimationInterval) clearInterval(agentAnimationInterval);
 
             const newRows = parseInt(configRowsInput.value);
             const newCols = parseInt(configColsInput.value);
 
-            if (isNaN(newRows) || newRows < 2 || newRows > 20 || isNaN(newCols) || newCols < 2 || newCols > 20) {
-                updateStatus("Ungültige Grid-Größe (Zeilen/Spalten müssen zwischen 2 und 20 sein).", "error");
-                return;
+            if (isNaN(newRows) || newRows < 2 || newRows > 25 || isNaN(newCols) || newCols < 2 || newCols > 25) {
+                if(showAlerts) updateStatus("Ungültige Grid-Größe (Zeilen/Spalten: 2-25).", "error"); return;
             }
 
             const newStart = parseCoordinateString(configStartInput.value, newRows, newCols);
             if (!newStart) {
-                updateStatus("Ungültiges Startformat oder außerhalb der Grenzen (Format: zeile,spalte).", "error");
-                return;
+                if(showAlerts) updateStatus("Ungültiges Startformat oder außerhalb der Grenzen.", "error"); return;
             }
 
             const newGoal = parseCoordinateString(configGoalInput.value, newRows, newCols);
             if (!newGoal) {
-                updateStatus("Ungültiges Zielformat oder außerhalb der Grenzen (Format: zeile,spalte).", "error");
-                return;
+                if(showAlerts) updateStatus("Ungültiges Zielformat oder außerhalb der Grenzen.", "error"); return;
             }
 
             if (newStart.row === newGoal.row && newStart.col === newGoal.col) {
-                updateStatus("Start und Ziel dürfen nicht identisch sein.", "error");
-                return;
+                if(showAlerts) updateStatus("Start und Ziel dürfen nicht identisch sein.", "error"); return;
             }
 
             const newObstacles = [];
@@ -448,58 +477,46 @@
                 if (line.trim() === "") continue;
                 const obs = parseCoordinateString(line, newRows, newCols);
                 if (!obs) {
-                    updateStatus(`Ungültiges Hindernisformat: "${line}" oder außerhalb der Grenzen.`, "error");
-                    return;
+                    if(showAlerts) updateStatus(`Ungültiges Hindernis: "${line}".`, "error"); return;
                 }
                 newObstacles.push(obs);
             }
 
             if (newObstacles.some(obs => obs.row === newStart.row && obs.col === newStart.col)) {
-                updateStatus("Startposition darf kein Hindernis sein.", "error");
-                return;
+                if(showAlerts) updateStatus("Startposition darf kein Hindernis sein.", "error"); return;
             }
             if (newObstacles.some(obs => obs.row === newGoal.row && obs.col === newGoal.col)) {
-                updateStatus("Zielposition darf kein Hindernis sein.", "error");
-                return;
+                if(showAlerts) updateStatus("Zielposition darf kein Hindernis sein.", "error"); return;
             }
 
-            // All valid, update global config
             GRID_ROWS = newRows;
             GRID_COLS = newCols;
             START_STATE = newStart;
             GOAL_STATE = newGoal;
-            OBSTACLES = newObstacles;
+            OBSTACLES = newObstacles; // Already parsed, direct assignment
             currentAgentPos = { ...START_STATE };
-
-
-            // Dynamically adjust cell size for very large grids if needed, or keep fixed.
-            // For simplicity, we'll keep CELL_WIDTH/HEIGHT as defined earlier,
-            // but you could calculate them based on container size and GRID_ROWS/COLS.
-            // CELL_WIDTH = Math.max(20, Math.floor(gridContainer.parentElement.clientWidth * 0.8 / GRID_COLS));
-            // CELL_HEIGHT = Math.max(20, Math.floor(400 / GRID_ROWS));
-
-
-            updateStatus("Konfiguration angewendet. Grid wird neu initialisiert...", "info");
-            initializeGrid(); // This will use the new global values
+            
+            if(showAlerts) updateStatus("Konfiguration angewendet. Grid wird neu initialisiert...", "info");
+            initializeGrid();
         }
-
 
         function setControlsDisabled(disabled) {
             startValueIterationButton.disabled = disabled;
-            resetGridButton.disabled = disabled; // Now refers to reset with current config
+            resetGridButton.disabled = disabled;
             gammaInput.disabled = disabled;
             speedInput.disabled = disabled;
-            applyConfigButton.disabled = disabled; // Disable while algo runs
+            applyConfigButton.disabled = disabled;
+            scenarioSelect.disabled = disabled;
         }
 
         function initializeGrid() {
-            gridContainer.innerHTML = ''; // Clear previous grid
+            gridContainer.innerHTML = '';
             gridContainer.style.gridTemplateRows = `repeat(${GRID_ROWS}, ${CELL_HEIGHT}px)`;
             gridContainer.style.gridTemplateColumns = `repeat(${GRID_COLS}, ${CELL_WIDTH}px)`;
 
             V = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(0));
             policy = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(null));
-            currentAgentPos = { ...START_STATE }; // Ensure agent starts at the (potentially new) start state
+            currentAgentPos = { ...START_STATE };
 
             for (let r = 0; r < GRID_ROWS; r++) {
                 for (let c = 0; c < GRID_COLS; c++) {
@@ -517,7 +534,12 @@
                     const policyArrow = document.createElement('span');
                     policyArrow.classList.add('policy-arrow');
                     cell.appendChild(policyArrow);
+                    
+                    cell.addEventListener('click', () => handleCellClick(r, c));
+                    cell.classList.add('interactive-obstacle'); // For hover effect if not start/goal
 
+
+                    // Apply special classes last so they can override heatmap if needed
                     if (r === START_STATE.row && c === START_STATE.col) cell.classList.add('start');
                     else if (r === GOAL_STATE.row && c === GOAL_STATE.col) cell.classList.add('goal');
                     else if (isObstacle(r, c)) cell.classList.add('obstacle');
@@ -526,27 +548,103 @@
                 }
             }
             
-            if (agentElement) { // Remove old agent if exists
-                agentElement.remove();
-                agentElement = null;
-            }
-            placeAgent(START_STATE.row, START_STATE.col); // Place agent at the correct start
-            updateGridDisplay();
+            if (agentElement) { agentElement.remove(); agentElement = null; }
+            placeAgent(START_STATE.row, START_STATE.col);
+            updateGridDisplay(); // Initial display with heatmap for 0 values
             resetStats();
             setControlsDisabled(false);
             animateAgentButton.disabled = true; 
-            if (!statusMessage.textContent.includes("Konfiguration angewendet")) { // Avoid overwriting apply config message
-                 updateStatus('Grid initialisiert. Bereit zum Start!');
+            if (!statusMessage.textContent.includes("Konfiguration angewendet") && !statusMessage.textContent.includes("Szenario geladen")) {
+                 updateStatus('Grid initialisiert. Klicke auf Zellen für Hindernisse.');
             }
         }
+
+        function handleCellClick(r, c) {
+            if (valueIterationInterval || agentAnimationInterval) {
+                updateStatus("Bitte stoppen Sie zuerst die Iteration/Animation.", "error");
+                return;
+            }
+            if ((r === START_STATE.row && c === START_STATE.col) || (r === GOAL_STATE.row && c === GOAL_STATE.col)) {
+                updateStatus("Start/Ziel können keine Hindernisse sein.", "error");
+                return; // Don't toggle start/goal
+            }
+
+            const cell = gridContainer.querySelector(`[data-row='${r}'][data-col='${c}']`);
+            const obstacleIndex = OBSTACLES.findIndex(obs => obs.row === r && obs.col === c);
+
+            if (obstacleIndex > -1) { // Is an obstacle, remove it
+                OBSTACLES.splice(obstacleIndex, 1);
+                cell.classList.remove('obstacle');
+                // Make sure heatmap is reapplied if it was an obstacle
+                const { bgColor } = getHeatmapColorAndRange(V[r][c], minV, maxV);
+                cell.style.backgroundColor = bgColor;
+            } else { // Not an obstacle, add it
+                OBSTACLES.push({ row: r, col: c });
+                cell.classList.add('obstacle');
+                cell.style.backgroundColor = ''; // Let CSS class take over
+            }
+            // Update the textarea in the config panel
+            populateConfigUIWithCurrentGlobals(); 
+            // No need to call initializeGrid, just update display if V values exist
+            // updateGridDisplay(); // This might be too much if V is not calculated yet
+            updateStatus(`Hindernis bei (${r},${c}) ${obstacleIndex > -1 ? 'entfernt' : 'gesetzt'}. Konfiguration im Panel aktualisiert.`);
+        }
+
+        function getHeatmapColorAndRange(value, currentMin, currentMax) {
+            // Normalize V to find min/max for heatmap, excluding goal and obstacles
+            let newMinV = Infinity, newMaxV = -Infinity;
+            let hasValidValues = false;
+            for (let r_idx = 0; r_idx < GRID_ROWS; r_idx++) {
+                for (let c_idx = 0; c_idx < GRID_COLS; c_idx++) {
+                    if (!isObstacle(r_idx, c_idx) && !isGoal(r_idx, c_idx)) {
+                        newMinV = Math.min(newMinV, V[r_idx][c_idx]);
+                        newMaxV = Math.max(newMaxV, V[r_idx][c_idx]);
+                        hasValidValues = true;
+                    }
+                }
+            }
+            if (!hasValidValues || newMinV === Infinity) { // All obstacles/goals or single cell
+                newMinV = 0; newMaxV = 0;
+            }
+            if (newMinV === newMaxV) { // Prevent division by zero if all values are same
+                 newMaxV = newMinV + 1; // Or handle as a single color
+            }
+
+
+            let normalizedValue = 0;
+            if (newMaxV > newMinV) { // Avoid division by zero
+                 normalizedValue = (value - newMinV) / (newMaxV - newMinV);
+            } else if (value >= newMinV) { // If all values are the same, treat as max
+                normalizedValue = 1;
+            }
+
+
+            normalizedValue = Math.max(0, Math.min(1, normalizedValue)); // Clamp between 0 and 1
+
+            // Green (high) to Blue/White (low)
+            // Hue: Green is ~120, Blue is ~240. Let's go from a light blue/cyan to green.
+            // Saturation and Lightness can be kept high for vibrant colors.
+            // Low values: lighter, slightly blueish (e.g., HSL(180, 70%, 90%))
+            // High values: greener (e.g., HSL(120, 70%, 60%))
+            const hue = 180 + (120 - 180) * normalizedValue; // from 180 (cyan) down to 120 (green)
+            const saturation = 70;
+            const lightness = 90 - (30 * normalizedValue); // from 90% (light) to 60% (mid-dark)
+            
+            return { bgColor: `hsl(${hue}, ${saturation}%, ${lightness}%)`, minV: newMinV, maxV: newMaxV};
+        }
+
 
         function isObstacle(row, col) {
             return OBSTACLES.some(obs => obs.row === row && obs.col === col);
         }
 
         function isGoal(row, col) {
-            return row === GOAL_STATE.row && col === GOAL_STATE.col;
+            return GOAL_STATE && row === GOAL_STATE.row && col === GOAL_STATE.col;
         }
+        function isStart(row, col) {
+            return START_STATE && row === START_STATE.row && col === START_STATE.col;
+        }
+
 
         function isValidPosition(row, col) {
             return row >= 0 && row < GRID_ROWS && col >= 0 && col < GRID_COLS;
@@ -558,7 +656,7 @@
                 agentElement.classList.add('agent');
                 gridContainer.appendChild(agentElement);
             }
-            currentAgentPos = { row, col }; // Update current agent position
+            currentAgentPos = { row, col };
             const agentSizeStyle = window.getComputedStyle(agentElement);
             const agentActualWidth = parseFloat(agentSizeStyle.width);
             const agentActualHeight = parseFloat(agentSizeStyle.height);
@@ -569,6 +667,28 @@
         }
 
         function updateGridDisplay() {
+            let currentMinVal = Infinity, currentMaxVal = -Infinity;
+            let foundNumericValue = false;
+
+            // First pass to find min/max V for normalization (excluding special cells)
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    if (!isObstacle(r,c) && !isGoal(r,c) && !isStart(r,c)) {
+                        currentMinVal = Math.min(currentMinVal, V[r][c]);
+                        currentMaxVal = Math.max(currentMaxVal, V[r][c]);
+                        foundNumericValue = true;
+                    }
+                }
+            }
+            if (!foundNumericValue) { // Handle empty grid or all special cells
+                currentMinVal = 0; currentMaxVal = 0;
+            }
+             if (currentMinVal === currentMaxVal && foundNumericValue) { // All same values
+                currentMaxVal = currentMinVal + 1; // Avoid div by zero, ensure some range
+            }
+            minV = currentMinVal; // Store for potential reuse
+            maxV = currentMaxVal;
+
             for (let r = 0; r < GRID_ROWS; r++) {
                 for (let c = 0; c < GRID_COLS; c++) {
                     const cell = gridContainer.querySelector(`[data-row='${r}'][data-col='${c}']`);
@@ -580,11 +700,16 @@
                         
                         if (policyArrow) {
                              policyArrow.textContent = policy[r][c] ? ACTIONS[policy[r][c]].symbol : '';
-                             if (isGoal(r,c) || isObstacle(r,c)) {
-                                 policyArrow.style.opacity = '0.3';
-                             } else {
-                                 policyArrow.style.opacity = '1';
-                             }
+                             if (isGoal(r,c) || isObstacle(r,c)) policyArrow.style.opacity = '0.3';
+                             else policyArrow.style.opacity = '1';
+                        }
+
+                        // Heatmap: Only apply to non-special cells
+                        if (!cell.classList.contains('start') && !cell.classList.contains('goal') && !cell.classList.contains('obstacle')) {
+                            const { bgColor } = getHeatmapColorAndRange(V[r][c], minV, maxV);
+                            cell.style.backgroundColor = bgColor;
+                        } else {
+                             cell.style.backgroundColor = ''; // Let CSS classes handle it
                         }
                     }
                 }
@@ -602,29 +727,18 @@
             if (isObstacle(nextRow, nextCol)) {
                 return OBSTACLE_PENALTY + GAMMA * V[row][col];
             }
-            
             let reward = STEP_REWARD;
-            if (isGoal(nextRow, nextCol)) {
-                reward = GOAL_REWARD;
-            }
+            if (isGoal(nextRow, nextCol)) reward = GOAL_REWARD;
             return reward + GAMMA * V[nextRow][nextCol];
         }
 
         function performValueIterationStep() {
             let delta = 0;
             const newV = V.map(rowArr => [...rowArr]);
-
             for (let r = 0; r < GRID_ROWS; r++) {
                 for (let c = 0; c < GRID_COLS; c++) {
-                    if (isObstacle(r, c)) {
-                        newV[r][c] = 0; 
-                        continue;
-                    }
-                    if (isGoal(r, c)) {
-                        newV[r][c] = GOAL_REWARD;
-                        continue;
-                    }
-
+                    if (isObstacle(r, c)) { newV[r][c] = 0; continue; }
+                    if (isGoal(r, c)) { newV[r][c] = GOAL_REWARD; continue; }
                     const oldValue = V[r][c];
                     let maxQValue = -Infinity;
                     for (const actionKey of ACTION_KEYS) {
@@ -641,18 +755,12 @@
         function extractOptimalPolicy() {
             for (let r = 0; r < GRID_ROWS; r++) {
                 for (let c = 0; c < GRID_COLS; c++) {
-                    if (isObstacle(r, c) || isGoal(r, c)) {
-                        policy[r][c] = null;
-                        continue;
-                    }
+                    if (isObstacle(r, c) || isGoal(r, c)) { policy[r][c] = null; continue; }
                     let bestAction = null;
                     let maxQValue = -Infinity;
                     for (const actionKey of ACTION_KEYS) {
                         const qValue = calculateQValue(r, c, actionKey);
-                        if (qValue > maxQValue) {
-                            maxQValue = qValue;
-                            bestAction = actionKey;
-                        }
+                        if (qValue > maxQValue) { maxQValue = qValue; bestAction = actionKey; }
                     }
                     policy[r][c] = bestAction;
                 }
@@ -660,68 +768,61 @@
         }
 
         function startValueIteration() {
-            GAMMA = parseFloat(gammaInput.value) || 0.9;
-            animationSpeed = parseInt(speedInput.value) || 500;
-
-            if (GAMMA < 0 || GAMMA > 1) {
-                updateStatus('Ungültiges Gamma! Wert muss zwischen 0 und 1 liegen.', 'error');
-                return;
-            }
-
+            GAMMA = parseFloat(gammaInput.value);
+            animationSpeed = parseInt(speedInput.value);
+            if (GAMMA < 0 || GAMMA > 1) { updateStatus('Ungültiges Gamma!', 'error'); return; }
             setControlsDisabled(true);
             animateAgentButton.disabled = true;
             updateStatus('Value Iteration gestartet...');
             currentIteration = 0;
             placeAgent(START_STATE.row, START_STATE.col); 
-            currentSteps = 0;
-            stepCount.textContent = currentSteps;
-
+            currentSteps = 0; stepCount.textContent = currentSteps;
 
             valueIterationInterval = setInterval(() => {
-                const delta = performValueIterationStep();
+                const iterationDelta = performValueIterationStep();
                 currentIteration++;
                 extractOptimalPolicy();
                 updateGridDisplay(); 
-                updateStats(currentIteration, delta, currentSteps);
+                updateStats(currentIteration, iterationDelta, currentSteps);
                 animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
 
-                if (delta < THETA || currentIteration > GRID_ROWS * GRID_COLS * 15) { 
-                    clearInterval(valueIterationInterval);
-                    valueIterationInterval = null;
-                    updateStatus(`Konvergiert nach ${currentIteration} Iterationen! Delta: ${delta.toFixed(Math.max(4,THETA.toString().split('.')[1]?.length || 0))}`);
+                if (iterationDelta < THETA || currentIteration > GRID_ROWS * GRID_COLS * 20) { // Max iter guard
+                    clearInterval(valueIterationInterval); valueIterationInterval = null;
+                    const finalDelta = iterationDelta; // Capture delta at convergence
+                    updateStatus(`Konvergiert nach ${currentIteration} Iterationen! Delta: ${finalDelta.toFixed(Math.max(4,THETA.toString().split('.')[1]?.length || 0))}`);
                     setControlsDisabled(false);
                     animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
+                     // Final update of stats with converged delta
+                    updateStats(currentIteration, finalDelta, currentSteps);
                 } else {
-                    updateStatus(`Iteration ${currentIteration}, Delta: ${delta.toFixed(4)}`);
+                    updateStatus(`Iteration ${currentIteration}, Delta: ${iterationDelta.toFixed(4)}`);
                 }
-            }, Math.max(10, animationSpeed / 10)); 
+            }, Math.max(5, animationSpeed / 10)); // Faster min interval
         }
 
-        function startAgentAnimation() {
-            placeAgent(START_STATE.row, START_STATE.col);
+        function startAgentAnimation() { /* ... (unchanged from previous good version, ensure it uses currentAgentPos for start) ... */
+            placeAgent(START_STATE.row, START_STATE.col); // Ensure agent starts fresh from START_STATE
             currentSteps = 0;
             setControlsDisabled(true);
             animateAgentButton.disabled = true;
             updateStatus('Agent folgt optimaler Policy...');
 
-            const maxAnimationSteps = GRID_ROWS * GRID_COLS * 2;
+            const maxAnimationSteps = GRID_ROWS * GRID_COLS * 3; // Increased max steps
             const visitedStatesInAnimation = new Set();
 
             agentAnimationInterval = setInterval(() => {
                 const stateKey = `${currentAgentPos.row},${currentAgentPos.col}`;
 
                 if (isGoal(currentAgentPos.row, currentAgentPos.col)) {
-                    clearInterval(agentAnimationInterval);
-                    agentAnimationInterval = null;
+                    clearInterval(agentAnimationInterval); agentAnimationInterval = null;
                     updateStatus(`🎉 Ziel erreicht in ${currentSteps} Schritten!`);
                     setControlsDisabled(false);
                     animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
                     return;
                 }
 
-                if (visitedStatesInAnimation.has(stateKey)) {
-                    clearInterval(agentAnimationInterval);
-                    agentAnimationInterval = null;
+                if (visitedStatesInAnimation.has(stateKey) && visitedStatesInAnimation.size > 1) { // Allow first step
+                    clearInterval(agentAnimationInterval); agentAnimationInterval = null;
                     updateStatus(`⚠️ Agent scheint im Kreis zu laufen (Schritt ${currentSteps}).`);
                     setControlsDisabled(false);
                     animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
@@ -730,18 +831,16 @@
                 visitedStatesInAnimation.add(stateKey);
 
                 if (currentSteps >= maxAnimationSteps) {
-                    clearInterval(agentAnimationInterval);
-                    agentAnimationInterval = null;
+                    clearInterval(agentAnimationInterval); agentAnimationInterval = null;
                     updateStatus(`⚠️ Maximale Schrittanzahl (${maxAnimationSteps}) für Animation erreicht.`);
                     setControlsDisabled(false);
                     animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
                     return;
                 }
 
-                const actionKey = policy[currentAgentPos.row][currentAgentPos.col];
+                const actionKey = policy[currentAgentPos.row]?.[currentAgentPos.col];
                 if (!actionKey) {
-                    clearInterval(agentAnimationInterval);
-                    agentAnimationInterval = null;
+                    clearInterval(agentAnimationInterval); agentAnimationInterval = null;
                     updateStatus(`❌ Keine Aktion für (${currentAgentPos.row},${currentAgentPos.col}) definiert.`);
                     setControlsDisabled(false);
                     animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
@@ -757,8 +856,7 @@
                     currentSteps++;
                     updateStats(currentIteration, parseFloat(deltaValue.textContent), currentSteps);
                 } else {
-                    clearInterval(agentAnimationInterval);
-                    agentAnimationInterval = null;
+                    clearInterval(agentAnimationInterval); agentAnimationInterval = null;
                     updateStatus(`❓ Agent versuchte ungültigen Zug von (${currentAgentPos.row},${currentAgentPos.col}) mit Aktion ${actionKey}.`);
                     setControlsDisabled(false);
                     animateAgentButton.disabled = !policy[START_STATE.row]?.[START_STATE.col];
@@ -769,22 +867,32 @@
         function resetGridWithCurrentConfig() {
             if (valueIterationInterval) clearInterval(valueIterationInterval);
             if (agentAnimationInterval) clearInterval(agentAnimationInterval);
-            valueIterationInterval = null;
-            agentAnimationInterval = null;
+            valueIterationInterval = null; agentAnimationInterval = null;
             
-            // currentAgentPos should already be START_STATE from the last config application or init
-            // but ensure V and policy are reset for the current config
             V = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(0));
             policy = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(null));
+            currentAgentPos = { ...START_STATE }; // Reset agent to current config's start
 
+            // Re-apply classes and heatmap based on current state (mostly for obstacles if changed interactively)
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    const cell = gridContainer.querySelector(`[data-row='${r}'][data-col='${c}']`);
+                    if(cell) {
+                        cell.classList.remove('start', 'goal', 'obstacle'); // Clear special states
+                        if (isStart(r,c)) cell.classList.add('start');
+                        else if (isGoal(r,c)) cell.classList.add('goal');
+                        else if (isObstacle(r,c)) cell.classList.add('obstacle');
+                    }
+                }
+            }
+            
             placeAgent(START_STATE.row, START_STATE.col);
-            updateGridDisplay();
+            updateGridDisplay(); // This will re-apply heatmap correctly
             resetStats();
             setControlsDisabled(false);
             animateAgentButton.disabled = true;
             updateStatus('Grid mit aktueller Konfiguration zurückgesetzt.');
         }
-
 
         function updateStatus(message, type = 'info') {
             statusMessage.textContent = message;
@@ -793,40 +901,33 @@
         }
 
         function resetStats() {
-            currentIteration = 0;
-            currentSteps = 0;
-            updateStats(0, 0, 0);
+            currentIteration = 0; currentSteps = 0;
+            updateStats(0, 0.000, 0); // Initial delta as 0.000
         }
 
-        function updateStats(iterations, delta, steps) {
+        function updateStats(iterations, currentDelta, steps) {
             iterationCount.textContent = iterations;
-            deltaValue.textContent = delta.toFixed(Math.max(4,THETA.toString().split('.')[1]?.length || 0));
+            // Ensure delta is a number before toFixed
+            const deltaNum = parseFloat(currentDelta);
+            deltaValue.textContent = isNaN(deltaNum) ? '0.000' : deltaNum.toFixed(Math.max(3,THETA.toString().split('.')[1]?.length || 0));
             stepCount.textContent = steps;
         }
 
-        // Event Listeners
-        applyConfigButton.addEventListener('click', applyConfiguration);
+        applyConfigButton.addEventListener('click', () => applyConfiguration(true));
         startValueIterationButton.addEventListener('click', startValueIteration);
         animateAgentButton.addEventListener('click', startAgentAnimation);
-        resetGridButton.addEventListener('click', resetGridWithCurrentConfig); // Changed from resetAll
+        resetGridButton.addEventListener('click', resetGridWithCurrentConfig); 
         
         gammaInput.addEventListener('change', (e) => { 
             const value = parseFloat(e.target.value);
-            if (!isNaN(value) && value >= 0 && value <= 1) {
-                GAMMA = value;
-            } else { 
-                e.target.value = GAMMA; 
-                updateStatus('Gamma muss zwischen 0 und 1 liegen.', 'error');
-            }
+            if (!isNaN(value) && value >= 0 && value <= 1) GAMMA = value;
+            else { e.target.value = GAMMA; updateStatus('Gamma muss zwischen 0 und 1 liegen.', 'error');}
         });
+        speedInput.addEventListener('change', (e) => { animationSpeed = parseInt(e.target.value);});
 
-        speedInput.addEventListener('change', (e) => {
-            animationSpeed = parseInt(e.target.value);
-        });
-
-        // Initialisierung
-        populateConfigUI(); // Populate UI fields with default JS values
-        initializeGrid();   // Initialize grid with default JS values
+        populateScenarioDropdown();
+        loadScenario(PREDEFINED_SCENARIOS[0]); // Load default scenario
+        // initializeGrid() is called by loadScenario via applyConfiguration
     </script>
 </body>
 </html>
