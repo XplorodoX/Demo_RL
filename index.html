@@ -391,8 +391,30 @@
                 PROB_SLIP_LEFT = 0; PROB_SLIP_RIGHT = 0;
             }
             
+
             if(showAlerts) updateStatus("Konfiguration angewendet.", "info");
             initializeGrid();
+        }
+
+        function setControlsDisabled(disabled) {
+            ui.startAlgorithmButton.disabled = disabled;
+            ui.resetGridButton.disabled = disabled;
+            ui.gammaInput.disabled = disabled;
+            ui.speedInput.disabled = disabled;
+            ui.applyConfigButton.disabled = disabled;
+            ui.scenarioSelect.disabled = disabled;
+            ui.configRowsInput.disabled = disabled;
+            ui.configColsInput.disabled = disabled;
+            ui.configStartInput.disabled = disabled;
+            ui.configGoalInput.disabled = disabled;
+            ui.configObstaclesInput.disabled = disabled;
+            ui.stochasticEnvSelect.disabled = disabled;
+            ui.probIntendedInput.disabled = disabled;
+            ui.probSlipInput.disabled = disabled;
+            ui.algorithmSelect.disabled = disabled;
+            ui.alphaInput.disabled = disabled;
+            ui.epsilonInput.disabled = disabled;
+            ui.episodesInput.disabled = disabled;
         }
 
         function initializeGrid() { /* ... (Add Q_VALUES init, cell click handler modification for Q-display) ... */
@@ -435,10 +457,10 @@
                     cell.appendChild(pArrow);
                     
                     cell.addEventListener('click', () => handleCellClick(r, c));
-                    if (!isStart(r,c) && !isGoal(r,c)) cell.classList.add('interactive-obstacle');
+                    if (!isStart({r,c}) && !isGoal({r,c})) cell.classList.add('interactive-obstacle');
 
-                    if (isStart(r,c)) cell.classList.add('start');
-                    else if (isGoal(r,c)) cell.classList.add('goal');
+                    if (isStart({r,c})) cell.classList.add('start');
+                    else if (isGoal({r,c})) cell.classList.add('goal');
                     else if (isObstacle({r,c})) cell.classList.add('obstacle'); // Pass object to isObstacle
                     
                     ui.gridContainer.appendChild(cell);
