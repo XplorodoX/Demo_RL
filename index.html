@@ -199,6 +199,7 @@
                 <select id="algorithm-select">
                     <option value="valueIteration" selected>Value Iteration</option>
                     <option value="policyIteration">Policy Iteration</option>
+                    <option value="qLearning">Q-Learning</option>
                 </select>
             </div>
             <button id="start-algorithm">🚀 Algorithmus starten</button>
@@ -217,6 +218,18 @@
                     <option value="50">Sehr Schnell</option>
                     <option value="10">Blitz</option>
                 </select>
+            </div>
+            <div class="parameter-group">
+                <label for="alpha-input">Alpha:</label>
+                <input type="number" id="alpha-input" value="0.5" min="0" max="1" step="0.05">
+            </div>
+            <div class="parameter-group">
+                <label for="epsilon-input">Epsilon:</label>
+                <input type="number" id="epsilon-input" value="0.1" min="0" max="1" step="0.05">
+            </div>
+            <div class="parameter-group">
+                <label for="episodes-input">Episoden:</label>
+                <input type="number" id="episodes-input" value="50" min="1" max="1000">
             </div>
         </div>
 
@@ -244,6 +257,7 @@
         const ACTION_ORDER = [ACTIONS.UP, ACTIONS.DOWN, ACTIONS.LEFT, ACTIONS.RIGHT]; // Consistent order for slips
 
         let GAMMA = 0.9, THETA = 0.0001, animationSpeed = 500;
+        let ALPHA = 0.5, EPSILON = 0.1, EPISODES = 50;
         let currentAlgorithm = "valueIteration"; // "valueIteration" or "policyIteration"
 
         // DOM Elements (get them all once)
@@ -270,6 +284,9 @@
             probSlipInput: document.getElementById('prob-slip'),
             applyConfigButton: document.getElementById('apply-config'),
             algorithmSelect: document.getElementById('algorithm-select'),
+            alphaInput: document.getElementById('alpha-input'),
+            epsilonInput: document.getElementById('epsilon-input'),
+            episodesInput: document.getElementById('episodes-input'),
         };
 
         let V = [], policy = [], Q_VALUES = [];
@@ -516,6 +533,30 @@
             }
             return expectedQValue;
         }
+
+        function sampleTransition(r, c, intendedActionKey) {
+            let actionKey = intendedActionKey;
+            if (IS_STOCHASTIC_ENV && PROB_INTENDED < 1.0) {
+                const outcomes = getActualActionOutcomes(intendedActionKey);
+                let rand = Math.random();
+                let cumulative = 0;
+                for (const o of outcomes) {
+                    cumulative += o.prob;
+                    if (rand <= cumulative) { actionKey = o.action.key; break; }
+                }
+            }
+            let next_r = r + ACTIONS[actionKey].dr;
+            let next_c = c + ACTIONS[actionKey].dc;
+            let reward = STEP_REWARD;
+            if (!isValidPosition({r: next_r, c: next_c})) {
+                next_r = r; next_c = c;
+            } else if (isObstacle({r: next_r, c: next_c})) {
+                next_r = r; next_c = c; reward = OBSTACLE_PENALTY;
+            } else if (isGoal({r: next_r, c: next_c})) {
+                reward = GOAL_REWARD;
+            }
+            return { next_r, next_c, reward };
+        }
         
         // --- DISPLAY ---
         function getHeatmapColorAndRange(value, currentMin, currentMax) { /* ... (same as before) ... */
@@ -691,7 +732,9 @@
 
         function startSelectedAlgorithm() {
             currentAlgorithm = ui.algorithmSelect.value;
-            ui.algorithmNameDisplay.textContent = currentAlgorithm === "valueIteration" ? "Value Iteration" : "Policy Iteration";
+            ui.algorithmNameDisplay.textContent =
+                currentAlgorithm === "valueIteration" ? "Value Iteration" :
+                (currentAlgorithm === "policyIteration" ? "Policy Iteration" : "Q-Learning");
             GAMMA = parseFloat(ui.gammaInput.value);
             animationSpeed = parseInt(ui.speedInput.value);
             if (GAMMA < 0 || GAMMA > 1) { updateStatus('Ungültiges Gamma!', 'error'); return; }
@@ -722,7 +765,7 @@
                         updateStatus(`VI Iter. ${currentIteration}, Delta: ${iterDelta.toFixed(4)}`);
                     }
                 }, Math.max(5, animationSpeed / 10));
-            } else { // Policy Iteration
+            } else if (currentAlgorithm === "policyIteration") { // Policy Iteration
                 // Initialize V and policy somewhat if needed (e.g., V to 0, policy to random/first action)
                 V = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(0));
                 policy = Array(GRID_ROWS).fill(null).map(row => Array(GRID_COLS).fill(null).map((_,c_idx) => {
@@ -766,6 +809,47 @@
                          updateStatus(`PI Iter. ${currentIteration}. Eval in ${evalIteration} Schritten. ${statusText}`);
                     }
                 }, Math.max(200, animationSpeed)); // PI steps are slower as eval is an inner loop
+            } else { // Q-Learning
+                V = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(0));
+                policy = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(null));
+                Q_VALUES = Array(GRID_ROWS).fill(null).map(() => Array(GRID_COLS).fill(null).map(() => ({UP:0,DOWN:0,LEFT:0,RIGHT:0})));
+                updateGridDisplay();
+                let episode = 0;
+                let stepInEpisode = 0;
+                placeAgent(START_STATE.r, START_STATE.c);
+                algorithmInterval = setInterval(() => {
+                    const state = { ...currentAgentPos };
+                    let actionKey;
+                    if (Math.random() < EPSILON || !policy[state.r][state.c]) {
+                        actionKey = ACTION_KEYS[Math.floor(Math.random() * ACTION_KEYS.length)];
+                    } else {
+                        actionKey = policy[state.r][state.c];
+                    }
+                    const { next_r, next_c, reward } = sampleTransition(state.r, state.c, actionKey);
+                    const maxNextQ = Math.max(...ACTION_KEYS.map(k => Q_VALUES[next_r][next_c][k]));
+                    const oldQ = Q_VALUES[state.r][state.c][actionKey];
+                    Q_VALUES[state.r][state.c][actionKey] = oldQ + ALPHA * (reward + GAMMA * maxNextQ - oldQ);
+                    V[state.r][state.c] = Math.max(...ACTION_KEYS.map(k => Q_VALUES[state.r][state.c][k]));
+                    policy[state.r][state.c] = ACTION_KEYS.reduce((best, k) => Q_VALUES[state.r][state.c][k] > Q_VALUES[state.r][state.c][best] ? k : best, ACTION_KEYS[0]);
+                    placeAgent(next_r, next_c);
+                    stepInEpisode++;
+                    currentSteps++;
+                    updateGridDisplay();
+                    updateStats(episode + 1, `Step ${stepInEpisode}`, currentSteps);
+
+                    if (isGoal({ r: next_r, c: next_c }) || stepInEpisode > GRID_ROWS * GRID_COLS * 3) {
+                        episode++;
+                        stepInEpisode = 0;
+                        placeAgent(START_STATE.r, START_STATE.c);
+                    }
+                    if (episode >= EPISODES) {
+                        clearInterval(algorithmInterval);
+                        algorithmInterval = null;
+                        updateStatus(`Q-Learning abgeschlossen nach ${episode} Episoden.`);
+                        setControlsDisabled(false);
+                        ui.animateAgentButton.disabled = !policy[START_STATE.r]?.[START_STATE.c];
+                    }
+                }, Math.max(5, animationSpeed / 10));
             }
         }
         
@@ -817,6 +901,9 @@
         ui.resetGridButton.addEventListener('click', resetGridWithCurrentConfig); 
         ui.gammaInput.addEventListener('change', e => { const v=parseFloat(e.target.value); if(!isNaN(v)&&v>=0&&v<=1)GAMMA=v; else{e.target.value=GAMMA;updateStatus('Gamma: 0-1','error');}});
         ui.speedInput.addEventListener('change', e => animationSpeed = parseInt(e.target.value));
+        ui.alphaInput.addEventListener('change', e => { const v=parseFloat(e.target.value); if(!isNaN(v)&&v>=0&&v<=1) ALPHA=v; else { e.target.value=ALPHA; updateStatus('Alpha: 0-1','error'); }});
+        ui.epsilonInput.addEventListener('change', e => { const v=parseFloat(e.target.value); if(!isNaN(v)&&v>=0&&v<=1) EPSILON=v; else { e.target.value=EPSILON; updateStatus('Epsilon: 0-1','error'); }});
+        ui.episodesInput.addEventListener('change', e => { const v=parseInt(e.target.value); if(!isNaN(v)&&v>0) EPISODES=v; else { e.target.value=EPISODES; updateStatus('Episoden >0','error'); }});
         ui.algorithmSelect.addEventListener('change', e => { currentAlgorithm = e.target.value; resetStats(); updateStatus(`Algorithmus auf ${ui.algorithmSelect.options[ui.algorithmSelect.selectedIndex].text} geändert.`); });
         ui.stochasticEnvSelect.addEventListener('change', e => { IS_STOCHASTIC_ENV = e.target.value === "1"; updateStatus(`Umgebung ist nun ${IS_STOCHASTIC_ENV ? 'stochastisch' : 'deterministisch'}.`); });
         [ui.probIntendedInput, ui.probSlipInput].forEach(input => input.addEventListener('change', () => {
